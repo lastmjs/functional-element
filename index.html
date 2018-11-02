@@ -2,17 +2,10 @@
 
 <html>
     <head>
-        <script type="module" src="test.js"></script>
+        <script type="module" src="elements/calc-app.ts"></script>
     </head>
+    
     <body>
-        <functional-element id="functional-element"></functional-element>
-
-        <script>
-            setTimeout(() => {
-                document.querySelector('#functional-element').prop1 = 'prop1';
-                document.querySelector('#functional-element').prop2 = 'prop2';
-                document.querySelector('#functional-element').prop3 = 'prop3';
-            }, 5000);
-        </script>
+        <calc-app></calc-app>
     </body>
 </html>
