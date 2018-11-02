@@ -2,9 +2,9 @@
   "name": "functional-element",
   "version": "0.0.0",
   "description": "",
-  "main": "test.js",
+  "main": "functional-element.ts",
   "scripts": {
-    "start": "zwitterion --port 8060"
+    "test": "zwitterion"
   },
   "repository": {
     "type": "git",

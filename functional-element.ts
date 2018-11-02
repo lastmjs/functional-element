@@ -4,7 +4,7 @@ interface UserResult {
 
 }
 
-export function functionalElement(tagName, userFunction) {
+export function customElement(tagName, userFunction) {
     window.customElements.define(tagName, class extends HTMLElement {
         props: {};
 
@@ -27,7 +27,7 @@ export function functionalElement(tagName, userFunction) {
                 this.props = calculateProps(userResult.props);
                 createPropertyAccessors(this, userFunction);
             }
-
+            
             if (userResult.template) {
                 render(userResult.template, this);
             }

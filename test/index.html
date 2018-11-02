@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <script type="module" src="test.ts"></script>
+    </head>
+
+    <body>
+        <test-element></test-element>
+
+        <script>
+            window.addEventListener('load', () => {
+                const testDiv = document.querySelector('#test-div');
+
+                if (
+                    testDiv.prop1 !== 1 ||
+                    testDiv.prop2 !== '2' ||
+                    testDiv.prop3 !== 3
+                ) {
+                    alert('Tests failed');
+                    return;
+                }
+
+                testDiv.click();
+
+                if (
+                    testDiv.prop1 !== 2 ||
+                    testDiv.prop2 !== '3' ||
+                    testDiv.prop3 !== 4
+                ) {
+                    alert('Tests failed');
+                    return;
+                }
+
+                alert('All tests passed');
+            });
+        </script>
+    </body>
+</html>
