@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <script type="module" src="test.js"></script>
+    </head>
+    <body>
+        <functional-element id="functional-element"></functional-element>
+
+        <script>
+            setTimeout(() => {
+                document.querySelector('#functional-element').prop1 = 'prop1';
+                document.querySelector('#functional-element').prop2 = 'prop2';
+                document.querySelector('#functional-element').prop3 = 'prop3';
+            }, 5000);
+        </script>
+    </body>
+</html>
