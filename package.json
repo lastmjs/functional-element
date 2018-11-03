@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/lastmjs/functional-element#readme",
   "dependencies": {
-    "guesswork": "0.11.2",
-    "lit-html": "0.12.0",
-    "zwitterion": "0.27.3"
+    "lit-html": "0.12.0"
+  },
+  "devDependencies": {
+    "guesswork": "^0.11.2",
+    "zwitterion": "^0.27.3"
   }
 }
