@@ -36,8 +36,7 @@ npm install functional-element
 Create them as follows:
 
 ```javascript
-import { html } from 'lit-html';
-import { customElement } from 'functional-element';
+import { html, customElement } from 'functional-element';
 
 customElement('example-element', ({ props, constructing }) => {
     if (constructing) {
@@ -48,19 +47,16 @@ customElement('example-element', ({ props, constructing }) => {
         };
     }
 
-    return {
-        template: html`
-            <div>${props.hello}</div>
-        `
-    };
+    return html`
+        <div>${props.hello}</div>
+    `;
 });
 ```
 
 ### Lifecycle
 
 ```javascript
-import { html } from 'lit-html';
-import { customElement } from 'functional-element';
+import { html, customElement } from 'functional-element';
 
 customElement('example-element', ({ constructing, connecting, disconnecting, adopting }) => {
     if (constructing) {
@@ -79,19 +75,16 @@ customElement('example-element', ({ constructing, connecting, disconnecting, ado
         console.log(`We're in the adopted callback!`);
     }
 
-    return {
-        template: html`
-            <div>It's the cycle of life!</div>
-        `
-    };
+    return html`
+        <div>It's the cycle of life!</div>
+    `;
 });
 ```
 
 ## Properties
 
 ```javascript
-import { html } from 'lit-html';
-import { customElement } from 'functional-element';
+import { html, customElement } from 'functional-element';
 
 customElement('example-element', ({ props, constructing }) => {
     if (constructing) {
@@ -105,20 +98,17 @@ customElement('example-element', ({ props, constructing }) => {
         };
     }
 
-    return {
-        template: html`
-            regularProp: <div>${props.regularProp}</div>
-            computedProp: <div>${props.computedProp}</div>
-        `
-    };
+    return html`
+        regularProp: <div>${props.regularProp}</div>
+        computedProp: <div>${props.computedProp}</div>
+    `;
 });
 ```
 
 ## Listening to events
 
 ```javascript
-import { html } from 'lit-html';
-import { customElement } from 'functional-element';
+import { html, customElement } from 'functional-element';
 
 customElement('example-element', ({ props, constructing, update }) => {
     if (constructing) {
@@ -129,19 +119,16 @@ customElement('example-element', ({ props, constructing, update }) => {
         };
     }
 
-    return {
-        template: html`
-            <button @click=${() => update({ props: {...props, count: props.count + 1} })}>${props.count}</button>
-        `
-    };
+    return html`
+        <button @click=${() => update({ props: {...props, count: props.count + 1} })}>${props.count}</button>
+    `;
 });
 ```
 
 ## Dispatching events
 
 ```javascript
-import { html } from 'lit-html';
-import { customElement } from 'functional-element';
+import { html, customElement } from 'functional-element';
 
 customElement('example-element', ({ props, constructing, element }) => {
     if (constructing) {
@@ -152,11 +139,9 @@ customElement('example-element', ({ props, constructing, element }) => {
         };
     }
 
-    return {
-        template: html`
-            <button @click=${() => increment(props, element)}>${props.count}</button>
-        `
-    };
+    return html`
+        <button @click=${() => increment(props, element)}>${props.count}</button>
+    `;
 });
 
 function increment(props, element) {
