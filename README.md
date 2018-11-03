@@ -41,9 +41,7 @@ import { html, customElement } from 'functional-element';
 customElement('example-element', ({ props, constructing }) => {
     if (constructing) {
         return {
-            props: {
-                hello: 'world!'
-            }
+            hello: 'world!'
         };
     }
 
@@ -89,11 +87,9 @@ import { html, customElement } from 'functional-element';
 customElement('example-element', ({ props, constructing }) => {
     if (constructing) {
         return {
-            props: {
-                regularProp: `Just your average property`,
-                computedProp: () => {
-                    return `This property was made by a function`;
-                }
+            regularProp: `Just your average property`,
+            computedProp: () => {
+                return `This property was made by a function`;
             }
         };
     }
@@ -113,14 +109,12 @@ import { html, customElement } from 'functional-element';
 customElement('example-element', ({ props, constructing, update }) => {
     if (constructing) {
         return {
-            props: {
-                count: 0
-            }
+            count: 0
         };
     }
 
     return html`
-        <button @click=${() => update({ props: {...props, count: props.count + 1} })}>${props.count}</button>
+        <button @click=${() => update({ ...props, count: props.count + 1 })}>${props.count}</button>
     `;
 });
 ```
