@@ -1,12 +1,15 @@
-import { render } from 'lit-html';
+import { render, TemplateResult } from 'lit-html';
 import { 
     UserFunctionOptions,
     UserFunctionResult,
     Props,
-    FunctionalElement
+    FunctionalElement,
+    UserFunction
 } from './index.d'; 
 
-export function customElement(tagName: string, userFunction: (userFunctionOptions: UserFunctionOptions) => UserFunctionResult) {
+export { html } from 'lit-html';
+
+export function customElement(tagName: string, userFunction: UserFunction) {
     window.customElements.define(tagName, class extends HTMLElement {
         props: Props;
 
@@ -15,7 +18,7 @@ export function customElement(tagName: string, userFunction: (userFunctionOption
 
             this.props = {};
 
-            const userResult: UserFunctionResult = userFunction({
+            const userResult: Props | undefined = userFunction({
                 props: this.props,
                 update: this.update.bind(this),
                 constructing: true,
@@ -25,10 +28,12 @@ export function customElement(tagName: string, userFunction: (userFunctionOption
                 element: this
             });
 
-            if (userResult && userResult.props) {
-                this.props = calculateProps(userResult.props);
-                createPropertyAccessors(this, userFunction);
+            if (userResult === undefined) {
+                return;
             }
+
+            this.props = calculateProps(userResult);
+            createPropertyAccessors(this, userFunction);
 
             //TODO I don't believe this is ever allowed in a constructor, the result of the constructor cannot have children is the error that keeps coming up
             // if (userResult && userResult.template) {
@@ -72,9 +77,9 @@ export function customElement(tagName: string, userFunction: (userFunctionOption
             });
         }
 
-        update(userFunctionResult: UserFunctionResult) {
-            if (userFunctionResult) {
-                this.props = calculateProps(userFunctionResult.props);
+        update(props?: Props) {
+            if (props !== undefined) {
+                this.props = calculateProps(props);
             }
 
             applyUserResult(userFunction, {
@@ -102,25 +107,19 @@ function calculateProps(props: Props) {
     }, {});
 }
 
-function applyUserResult(userFunction: (userFunctionOptions: UserFunctionOptions) => UserFunctionResult, userFunctionOptions: UserFunctionOptions) {
-    const userResult = userFunction(userFunctionOptions);
+function applyUserResult(userFunction: UserFunction, userFunctionOptions: UserFunctionOptions) {
+    const userResult: UserFunctionResult = userFunction(userFunctionOptions);
     
     if (userResult === undefined) {
         throw new Error('Nothing returned from element function');
     }
 
-    if (userResult.props) {
-        userFunctionOptions.element.props = calculateProps(userResult.props);
-    }
-
-    if (userResult.template) {
-        render(userResult.template, userFunctionOptions.element);
-    }
+    render(<TemplateResult> userResult, userFunctionOptions.element);
 
     //TODO we might want to throw something here
 }
 
-function createPropertyAccessors(element: FunctionalElement, userFunction: (userFunctionOptions: UserFunctionOptions) => UserFunctionResult) {
+function createPropertyAccessors(element: FunctionalElement, userFunction: UserFunction) {
     Object.keys(element.props).forEach((propsKey) => {
         Object.defineProperty(element, propsKey, {
            set (val) {

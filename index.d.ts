@@ -2,12 +2,12 @@ import { TemplateResult } from 'lit-html';
 
 interface FunctionalElement extends HTMLElement {
     props: Props;
-    update: (userFunctionResult: UserFunctionResult) => void;
+    update: UpdateFunction;
 }
 
 interface UserFunctionOptions {
     props: Props;
-    update: (userFunctionResult: UserFunctionResult) => void;
+    update: UpdateFunction;
     constructing: boolean;
     connecting: boolean;
     disconnecting: boolean;
@@ -15,10 +15,9 @@ interface UserFunctionOptions {
     element: FunctionalElement;
 }
 
-interface UserFunctionResult {
-    readonly props?: Props;
-    readonly template?: TemplateResult;
-}
+type UpdateFunction = (props?: Props) => void;
+type UserFunctionResult = TemplateResult | Props | undefined;
+type UserFunction = (userFunctionOptions: UserFunctionOptions) => UserFunctionResult;
 
 interface Props {
     readonly [key: string]: any;    

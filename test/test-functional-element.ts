@@ -1,12 +1,11 @@
 import jsverify from 'jsverify-es-module';
-import { customElement } from '../functional-element';
-import { html } from 'lit-html';
+import { customElement, html } from '../functional-element';
 
 class TestFunctionalElement extends HTMLElement {
     prepareTests(test: any) {
 
         let counter = 0;
-        test('properties set from initial return', [jsverify.nat(10)], (numProperties: number) => {
+        test('properties set in constructor', [jsverify.nat(10)], (numProperties: number) => {
             counter = counter + 1;
             const arbProperties = new Array(numProperties).fill(0).map((number) => jsverify.sampler(jsverify.nestring)()).reduce((result, arbString) => {
                 return {
@@ -16,10 +15,11 @@ class TestFunctionalElement extends HTMLElement {
             }, {});
 
             const testElementName = `test-element-${counter}`;
-            customElement(testElementName, () => {
-                return {
-                    props: arbProperties
-                };
+            customElement(testElementName, ({ constructing }) => {
+                if (constructing) {
+                    return arbProperties;
+                }
+                return html``;
             });
 
             const testElement = document.createElement(testElementName);
@@ -46,13 +46,11 @@ class TestFunctionalElement extends HTMLElement {
 
             const testElementName = `test-properties-${counter}`;
             customElement(testElementName, () => {
-                return {
-                    template: html`
-                        ${arbIds.map((arbId) => {
-                            return html`<div id="${arbId}"></div>`;
-                        })}
-                    `
-                };
+                return html`
+                    ${arbIds.map((arbId) => {
+                        return html`<div id="${arbId}"></div>`;
+                    })}
+                `;
             });
 
             const testElement = document.createElement(`test-properties-${counter}`);
