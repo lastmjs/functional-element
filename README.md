@@ -61,7 +61,7 @@ import { customElement } from 'functional-element';
 
 customElement('example-element', exampleElement);
 
-function exampleElement({ constructing, connecting, disconnecting, adopted }) {
+function exampleElement({ constructing, connecting, disconnecting, adopting }) {
     if (constructing) {
         console.log(`We're in the constructor!`);
     }
@@ -74,7 +74,7 @@ function exampleElement({ constructing, connecting, disconnecting, adopted }) {
         console.log(`We're in the disconnectedCallback!`);
     }
 
-    if (adopted) {
+    if (adopting) {
         console.log(`We're in the adopted callback!`);
     }
 
