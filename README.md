@@ -6,8 +6,11 @@
 
 ## Live demo
 
-Play with a real demo app: https://mwad-functional-element.netlify.com
-See the code of a real demo app: https://github.com/lastmjs/mwad-functional-element
+* Tic tac toe demo:
+* Tic tac toe code: https://github.com/lastmjs/tic-tac-toe
+
+* Calculator demo: https://mwad-functional-element.netlify.com
+* Calculator code: https://github.com/lastmjs/mwad-functional-element
 
 ## Installation
 
