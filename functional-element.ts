@@ -1,19 +1,21 @@
 import { render } from 'lit-html';
+import { 
+    UserFunctionOptions,
+    UserFunctionResult,
+    Props,
+    FunctionalElement
+} from './index.d'; 
 
-interface UserResult {
-
-}
-
-export function customElement(tagName, userFunction) {
+export function customElement(tagName: string, userFunction: (userFunctionOptions: UserFunctionOptions) => UserFunctionResult) {
     window.customElements.define(tagName, class extends HTMLElement {
-        props: {};
+        props: Props;
 
         constructor() {
             super();
 
             this.props = {};
 
-            const userResult = userFunction({
+            const userResult: UserFunctionResult = userFunction({
                 props: this.props,
                 update: this.update.bind(this),
                 constructing: true,
@@ -69,9 +71,9 @@ export function customElement(tagName, userFunction) {
             });
         }
 
-        update(userResult) {
-            if (userResult) {
-                this.props = calculateProps(userResult.props);
+        update(userFunctionResult: UserFunctionResult) {
+            if (userFunctionResult) {
+                this.props = calculateProps(userFunctionResult.props);
             }
 
             applyUserResult(userFunction, {
@@ -89,11 +91,9 @@ export function customElement(tagName, userFunction) {
 
 //TODO perhaps to allow asynchronous property setting here we can do an async reduce
 //TODO look into asynchronous property setters though, I don't think we'll be able to allow that
-function calculateProps(props) {
-    return Object.entries(props).reduce((result, propsEntry) => {
-        const propKey = propsEntry[0];
-        const propValue = propsEntry[1];
-
+function calculateProps(props: Props) {
+    return Object.keys(props).reduce((result: Props, propKey: string) => {
+        const propValue = props[propKey];
         return {
             ...result,
             [propKey]: typeof propValue === 'function' ? propValue() : propValue
@@ -101,25 +101,25 @@ function calculateProps(props) {
     }, {});
 }
 
-function applyUserResult(userFunction, userFunctionsOptions) {
-    const userResult = userFunction(userFunctionsOptions);
+function applyUserResult(userFunction: (userFunctionOptions: UserFunctionOptions) => UserFunctionResult, userFunctionOptions: UserFunctionOptions) {
+    const userResult = userFunction(userFunctionOptions);
     
     if (userResult === undefined) {
         throw new Error('Nothing returned from element function');
     }
 
     if (userResult.props) {
-        userFunctionsOptions.element.props = calculateProps(userResult.props);
+        userFunctionOptions.element.props = calculateProps(userResult.props);
     }
 
     if (userResult.template) {
-        render(userResult.template, userFunctionsOptions.element);
+        render(userResult.template, userFunctionOptions.element);
     }
 
     //TODO we might want to throw something here
 }
 
-function createPropertyAccessors(element, userFunction) {
+function createPropertyAccessors(element: FunctionalElement, userFunction: (userFunctionOptions: UserFunctionOptions) => UserFunctionResult) {
     Object.keys(element.props).forEach((propsKey) => {
         Object.defineProperty(element, propsKey, {
            set (val) {
