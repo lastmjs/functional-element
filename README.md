@@ -6,6 +6,9 @@
 
 ## Live demo
 
+Play with a real demo app: https://mwad-functional-element.netlify.com
+See the code of a real demo app: https://github.com/lastmjs/mwad-functional-element
+
 ## Installation
 
 ```bash
