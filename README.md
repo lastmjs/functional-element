@@ -1,3 +1,5 @@
+[![npm version](https://img.shields.io/npm/v/functional-element.svg?style=flat)](https://www.npmjs.com/package/functional-element) [![dependency Status](https://david-dm.org/lastmjs/functional-element/status.svg)](https://david-dm.org/lastmjs/functional-element) [![devDependency Status](https://david-dm.org/lastmjs/functional-element/dev-status.svg)](https://david-dm.org/lastmjs/functional-element?type=dev)
+
 # functional-element
 
 `functional-element` exposes the custom element API in a functional manner. It allows you to express your custom element's behavior as a function. The custom element lifecycle is exposed through parameters to your function. You simply return a template and props as needed. Templating is currently handled by `lit-html`. Hook up event listeners with simple functions. No more classes, methods, or inheritance.
