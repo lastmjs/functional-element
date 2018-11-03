@@ -25,14 +25,15 @@ export function customElement(tagName: string, userFunction: (userFunctionOption
                 element: this
             });
 
-            if (userResult.props) {
+            if (userResult && userResult.props) {
                 this.props = calculateProps(userResult.props);
                 createPropertyAccessors(this, userFunction);
             }
-            
-            if (userResult.template) {
-                render(userResult.template, this);
-            }
+
+            //TODO I don't believe this is ever allowed in a constructor, the result of the constructor cannot have children is the error that keeps coming up
+            // if (userResult && userResult.template) {
+            //     render(userResult.template, this);
+            // }
         }
 
         connectedCallback() {

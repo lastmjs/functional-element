@@ -1,10 +1,11 @@
 {
   "name": "functional-element",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "functional-element.ts",
   "scripts": {
-    "test": "zwitterion"
+    "test": "guesswork chromium firefox --entry test/index.js",
+    "test-manual": "guesswork --entry test/index.js"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,8 @@
   },
   "homepage": "https://github.com/lastmjs/functional-element#readme",
   "dependencies": {
-    "lit-html": "^0.12.0",
-    "zwitterion": "^0.27.3"
+    "guesswork": "0.11.2",
+    "lit-html": "0.12.0",
+    "zwitterion": "0.27.3"
   }
 }

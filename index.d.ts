@@ -16,8 +16,8 @@ interface UserFunctionOptions {
 }
 
 interface UserFunctionResult {
-    readonly props: Props;
-    readonly template: TemplateResult;
+    readonly props?: Props;
+    readonly template?: TemplateResult;
 }
 
 interface Props {
