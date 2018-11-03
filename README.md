@@ -164,7 +164,7 @@ function exampleElement({ props, constructing, element }) {
 
     return {
         template: html`
-            <button @click=${() => increment(props)}>${props.count}</button>
+            <button @click=${() => increment(props, element)}>${props.count}</button>
         `
     };
 }
