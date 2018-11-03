@@ -39,9 +39,7 @@ Create them as follows:
 import { html } from 'lit-html';
 import { customElement } from 'functional-element';
 
-customElement('example-element', exampleElement);
-
-function exampleElement({ props, constructing }) {
+customElement('example-element', ({ props, constructing }) => {
     if (constructing) {
         return {
             props: {
@@ -55,7 +53,7 @@ function exampleElement({ props, constructing }) {
             <div>${props.hello}</div>
         `
     };
-}
+});
 ```
 
 ### Lifecycle
@@ -64,9 +62,7 @@ function exampleElement({ props, constructing }) {
 import { html } from 'lit-html';
 import { customElement } from 'functional-element';
 
-customElement('example-element', exampleElement);
-
-function exampleElement({ constructing, connecting, disconnecting, adopting }) {
+customElement('example-element', ({ constructing, connecting, disconnecting, adopting }) => {
     if (constructing) {
         console.log(`We're in the constructor!`);
     }
@@ -88,7 +84,7 @@ function exampleElement({ constructing, connecting, disconnecting, adopting }) {
             <div>It's the cycle of life!</div>
         `
     };
-}
+});
 ```
 
 ## Properties
@@ -97,9 +93,7 @@ function exampleElement({ constructing, connecting, disconnecting, adopting }) {
 import { html } from 'lit-html';
 import { customElement } from 'functional-element';
 
-customElement('example-element', exampleElement);
-
-function exampleElement({ props, constructing }) {
+customElement('example-element', ({ props, constructing }) => {
     if (constructing) {
         return {
             props: {
@@ -117,7 +111,7 @@ function exampleElement({ props, constructing }) {
             computedProp: <div>${props.computedProp}</div>
         `
     };
-}
+});
 ```
 
 ## Listening to events
@@ -126,9 +120,7 @@ function exampleElement({ props, constructing }) {
 import { html } from 'lit-html';
 import { customElement } from 'functional-element';
 
-customElement('example-element', exampleElement);
-
-function exampleElement({ props, constructing, update }) {
+customElement('example-element', ({ props, constructing, update }) => {
     if (constructing) {
         return {
             props: {
@@ -142,7 +134,7 @@ function exampleElement({ props, constructing, update }) {
             <button @click=${() => update({ props: {...props, count: props.count + 1} })}>${props.count}</button>
         `
     };
-}
+});
 ```
 
 ## Dispatching events
@@ -151,9 +143,7 @@ function exampleElement({ props, constructing, update }) {
 import { html } from 'lit-html';
 import { customElement } from 'functional-element';
 
-customElement('example-element', exampleElement);
-
-function exampleElement({ props, constructing, element }) {
+customElement('example-element', ({ props, constructing, element }) => {
     if (constructing) {
         return {
             props: {
@@ -167,7 +157,7 @@ function exampleElement({ props, constructing, element }) {
             <button @click=${() => increment(props, element)}>${props.count}</button>
         `
     };
-}
+});
 
 function increment(props, element) {
     element.dispatch(new CustomEvent('increment', {
