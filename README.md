@@ -130,9 +130,7 @@ import { html, customElement } from 'functional-element';
 customElement('example-element', ({ props, constructing, element }) => {
     if (constructing) {
         return {
-            props: {
-                count: 0
-            }
+            count: 0
         };
     }
 
