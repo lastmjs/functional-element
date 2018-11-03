@@ -70,7 +70,10 @@ export function customElement(tagName, userFunction) {
         }
 
         update(userResult) {
-            this.props = calculateProps(userResult.props);
+            if (userResult) {
+                this.props = calculateProps(userResult.props);
+            }
+
             applyUserResult(userFunction, {
                 props: this.props,
                 update: this.update.bind(this),
@@ -118,7 +121,7 @@ function applyUserResult(userFunction, userFunctionsOptions) {
 
 function createPropertyAccessors(element, userFunction) {
     Object.keys(element.props).forEach((propsKey) => {
-        Object.defineProperty(Object.getPrototypeOf(element), propsKey, {
+        Object.defineProperty(element, propsKey, {
            set (val) {
                 element.props = {
                     ...element.props,
