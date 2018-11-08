@@ -6,7 +6,7 @@
 
 ## Live demo
 
-* Tic tac toe demo:
+* Tic tac toe demo: https://functional-tic-tac-toe.netlify.com
 * Tic tac toe code: https://github.com/lastmjs/tic-tac-toe
 
 * Calculator demo: https://mwad-functional-element.netlify.com
