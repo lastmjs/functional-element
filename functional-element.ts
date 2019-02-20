@@ -18,31 +18,32 @@ export function customElement(tagName: string, userFunction: UserFunction) {
 
             this.props = {};
 
-            const userResult: Props | undefined = userFunction({
-                props: this.props,
-                update: this.update.bind(this),
-                constructing: true,
-                connecting: false,
-                disconnecting: false,
-                adopting: false,
-                element: this
-            });
+            (async () => {
+                this.props = {};
 
-            if (userResult === undefined) {
-                return;
-            }
+                const userResult: Props | undefined = await userFunction({
+                    props: this.props,
+                    update: this.update.bind(this),
+                    constructing: true,
+                    connecting: false,
+                    disconnecting: false,
+                    adopting: false,
+                    element: this
+                });
 
-            this.props = calculateProps(userResult);
-            createPropertyAccessors(this, userFunction);
+                if (userResult === undefined) {
+                    return;
+                }
 
-            //TODO I don't believe this is ever allowed in a constructor, the result of the constructor cannot have children is the error that keeps coming up
-            // if (userResult && userResult.template) {
-            //     render(userResult.template, this);
-            // }
+                this.props = calculateProps(userResult);
+                createPropertyAccessors(this, userFunction);
+
+                this.dispatchEvent(new CustomEvent('constructed'));
+            })();
         }
 
-        connectedCallback() {
-            applyUserResult(userFunction, {
+        async connectedCallback() {
+            await applyUserResult(userFunction, {
                 props: this.props,
                 update: this.update.bind(this),
                 constructing: false,
@@ -51,10 +52,12 @@ export function customElement(tagName: string, userFunction: UserFunction) {
                 adopting: false,
                 element: this
             });
+
+            this.dispatchEvent(new CustomEvent('connected'));
         }
 
-        disconnectedCallback() {
-            applyUserResult(userFunction, {
+        async disconnectedCallback() {
+            await applyUserResult(userFunction, {
                 props: this.props,
                 update: this.update.bind(this),
                 constructing: false,
@@ -63,10 +66,12 @@ export function customElement(tagName: string, userFunction: UserFunction) {
                 adopting: false,
                 element: this
             });
+
+            this.dispatchEvent(new CustomEvent('disconnected'));
         }
 
-        adoptedCallback() {
-            applyUserResult(userFunction, {
+        async adoptedCallback() {
+            await applyUserResult(userFunction, {
                 props: this.props,
                 update: this.update.bind(this),
                 constructing: false,
@@ -75,14 +80,16 @@ export function customElement(tagName: string, userFunction: UserFunction) {
                 adopting: true,
                 element: this
             });
+
+            this.dispatchEvent(new CustomEvent('adopted'));
         }
 
-        update(props?: Props) {
+        async update(props?: Props) {
             if (props !== undefined) {
                 this.props = calculateProps(props);
             }
 
-            applyUserResult(userFunction, {
+            await applyUserResult(userFunction, {
                 props: this.props,
                 update: this.update.bind(this),
                 constructing: false,
@@ -91,6 +98,8 @@ export function customElement(tagName: string, userFunction: UserFunction) {
                 adopting: false,
                 element: this
             });
+
+            this.dispatchEvent(new CustomEvent('updated'));
         }
     });
 }
@@ -107,8 +116,8 @@ function calculateProps(props: Props) {
     }, {});
 }
 
-function applyUserResult(userFunction: UserFunction, userFunctionOptions: UserFunctionOptions) {
-    const userResult: UserFunctionResult = userFunction(userFunctionOptions);
+async function applyUserResult(userFunction: UserFunction, userFunctionOptions: UserFunctionOptions) {
+    const userResult: UserFunctionResult = await userFunction(userFunctionOptions);
     
     if (userResult === undefined) {
         throw new Error('Nothing returned from element function');
