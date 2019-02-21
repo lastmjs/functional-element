@@ -18,10 +18,34 @@ export function customElement(tagName: string, userFunction: UserFunction) {
 
             this.props = {};
 
-            (async () => {
+            if (userFunction.constructor.name === 'AsyncFunction') {
+                (async () => {
+                    this.props = {};
+    
+                    const userResult: Props | undefined = await userFunction({
+                        props: this.props,
+                        update: this.update.bind(this),
+                        constructing: true,
+                        connecting: false,
+                        disconnecting: false,
+                        adopting: false,
+                        element: this
+                    });
+    
+                    if (userResult === undefined) {
+                        return;
+                    }
+    
+                    this.props = calculateProps(userResult);
+                    createPropertyAccessors(this, userFunction);
+    
+                    this.dispatchEvent(new CustomEvent('constructed'));
+                })();    
+            }
+            else {
                 this.props = {};
 
-                const userResult: Props | undefined = await userFunction({
+                const userResult: Props | undefined = userFunction({
                     props: this.props,
                     update: this.update.bind(this),
                     constructing: true,
@@ -39,7 +63,7 @@ export function customElement(tagName: string, userFunction: UserFunction) {
                 createPropertyAccessors(this, userFunction);
 
                 this.dispatchEvent(new CustomEvent('constructed'));
-            })();
+            }
         }
 
         async connectedCallback() {
