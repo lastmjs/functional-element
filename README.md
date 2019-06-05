@@ -2,7 +2,7 @@
 
 # functional-element
 
-`functional-element` exposes the custom element API in a functional manner. It allows you to express your custom element's behavior as a function. The custom element lifecycle is exposed through parameters to your function. You simply return a template and props as needed. Templating is currently handled by `lit-html`. Hook up event listeners with simple functions. No more classes, methods, or inheritance.
+`functional-element` exposes the custom element API in a functional manner. It allows you to express your custom element's behavior as a function. The custom element lifecycle is exposed through parameters to your function. You simply return a template or props as needed. Templating is currently handled by `lit-html`. Hook up event listeners with simple functions. No more classes, methods, or inheritance.
 
 ## Live demo
 
@@ -41,7 +41,7 @@ Create them as follows:
 ```javascript
 import { html, customElement } from 'functional-element';
 
-customElement('example-element', ({ props, constructing }) => {
+customElement('example-element', ({ constructing, hello }) => {
     if (constructing) {
         return {
             hello: 'world!'
@@ -49,7 +49,7 @@ customElement('example-element', ({ props, constructing }) => {
     }
 
     return html`
-        <div>${props.hello}</div>
+        <div>${hello}</div>
     `;
 });
 ```
@@ -87,7 +87,7 @@ customElement('example-element', ({ constructing, connecting, disconnecting, ado
 ```javascript
 import { html, customElement } from 'functional-element';
 
-customElement('example-element', ({ props, constructing }) => {
+customElement('example-element', ({ constructing, regularProp, computedProp }) => {
     if (constructing) {
         return {
             regularProp: `Just your average property`,
@@ -98,8 +98,8 @@ customElement('example-element', ({ props, constructing }) => {
     }
 
     return html`
-        regularProp: <div>${props.regularProp}</div>
-        computedProp: <div>${props.computedProp}</div>
+        regularProp: <div>${regularProp}</div>
+        computedProp: <div>${computedProp()}</div>
     `;
 });
 ```
@@ -109,7 +109,7 @@ customElement('example-element', ({ props, constructing }) => {
 ```javascript
 import { html, customElement } from 'functional-element';
 
-customElement('example-element', ({ props, constructing, update }) => {
+customElement('example-element', ({ constructing, update, count }) => {
     if (constructing) {
         return {
             count: 0
@@ -117,7 +117,7 @@ customElement('example-element', ({ props, constructing, update }) => {
     }
 
     return html`
-        <button @click=${() => update({ ...props, count: props.count + 1 })}>${props.count}</button>
+        <button @click=${() => update({ count: count + 1 })}>${count}</button>
     `;
 });
 ```
@@ -127,7 +127,7 @@ customElement('example-element', ({ props, constructing, update }) => {
 ```javascript
 import { html, customElement } from 'functional-element';
 
-customElement('example-element', ({ props, constructing, element }) => {
+customElement('example-element', ({ constructing, element, count }) => {
     if (constructing) {
         return {
             count: 0
@@ -135,15 +135,43 @@ customElement('example-element', ({ props, constructing, element }) => {
     }
 
     return html`
-        <button @click=${() => increment(props, element)}>${props.count}</button>
+        <button @click=${() => increment(element, count)}>${count}</button>
     `;
 });
 
-function increment(props, element) {
+function increment(element, count) {
     element.dispatch(new CustomEvent('increment', {
         detail: {
-            count: props.count + 1
+            count: count + 1
         }
     }));
+}
+```
+## Async
+
+```javascript
+import { html, customElement } from 'functional-element';
+
+customElement('example-element', async ({ constructing, update, count }) => {
+    if (constructing) {
+        return {
+            count: 0
+        };
+    }
+
+    const newCount = await increment(count);
+
+    return html`
+        count: ${count}
+    `;
+});
+
+async function increment(count) {
+    await wait(5000);
+    return count + 1;
+}
+
+async function wait(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
 }
 ```

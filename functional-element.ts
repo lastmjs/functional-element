@@ -146,6 +146,11 @@ async function applyCustomElementDefinerResult(element: FunctionalElement, custo
 
 function createPropertyAccessors(element: FunctionalElement, customElementDefiner: CustomElementDefiner) {
     Object.keys(element.props).forEach((propsKey) => {
+
+        if ((element as any)[propsKey] !== undefined) {
+            (element.props as any)[propsKey] = (element as any)[propsKey];
+        }
+
         Object.defineProperty(element, propsKey, {
            set (val) {
                 element.props = {
