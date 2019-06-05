@@ -1,52 +1,23 @@
 import { render, TemplateResult } from 'lit-html';
 import { 
-    UserFunctionOptions,
-    UserFunctionResult,
+    CustomElementDefinerResult,
     Props,
     FunctionalElement,
-    UserFunction
+    CustomElementDefinerOptions,
+    CustomElementDefiner
 } from './index.d'; 
 
 export { html } from 'lit-html';
 
-export function customElement(tagName: string, userFunction: UserFunction) {
+export function customElement(tagName: string, customElementDefiner: CustomElementDefiner) {
     window.customElements.define(tagName, class extends HTMLElement {
-        props: Props;
+        props: Props = {};
 
         constructor() {
             super();
 
-            this.props = {};
-
-            if (userFunction.constructor.name === 'AsyncFunction') {
-                (async () => {
-                    this.props = {};
-    
-                    const userResult: Props | undefined = await userFunction({
-                        props: this.props,
-                        update: this.update.bind(this),
-                        constructing: true,
-                        connecting: false,
-                        disconnecting: false,
-                        adopting: false,
-                        element: this
-                    });
-    
-                    if (userResult === undefined) {
-                        return;
-                    }
-    
-                    this.props = calculateProps(userResult);
-                    createPropertyAccessors(this, userFunction);
-    
-                    this.dispatchEvent(new CustomEvent('constructed'));
-                })();    
-            }
-            else {
-                this.props = {};
-
-                const userResult: Props | undefined = userFunction({
-                    props: this.props,
+            (async () => {
+                const customElementDefinerResult: CustomElementDefinerResult = await customElementDefiner({
                     update: this.update.bind(this),
                     constructing: true,
                     connecting: false,
@@ -55,34 +26,37 @@ export function customElement(tagName: string, userFunction: UserFunction) {
                     element: this
                 });
 
-                if (userResult === undefined) {
-                    return;
+                if (checkIfCustomElementDefinerResultIsProps(customElementDefinerResult)) {
+                    this.props = {
+                        ...this.props,
+                        ...customElementDefinerResult
+                    };
+                    createPropertyAccessors(this, customElementDefiner);
                 }
 
-                this.props = calculateProps(userResult);
-                createPropertyAccessors(this, userFunction);
-
                 this.dispatchEvent(new CustomEvent('constructed'));
-            }
+            })();    
         }
 
         async connectedCallback() {
-            await applyUserResult(userFunction, {
-                props: this.props,
-                update: this.update.bind(this),
-                constructing: false,
-                connecting: true,
-                disconnecting: false,
-                adopting: false,
-                element: this
+            this.addEventListener('constructed', async () => {
+                await applyCustomElementDefinerResult(this, customElementDefiner, {
+                    ...this.props,
+                    update: this.update.bind(this),
+                    constructing: false,
+                    connecting: true,
+                    disconnecting: false,
+                    adopting: false,
+                    element: this
+                });
+    
+                this.dispatchEvent(new CustomEvent('connected'));  
             });
-
-            this.dispatchEvent(new CustomEvent('connected'));
         }
 
         async disconnectedCallback() {
-            await applyUserResult(userFunction, {
-                props: this.props,
+            await applyCustomElementDefinerResult(this, customElementDefiner, {
+                ...this.props,
                 update: this.update.bind(this),
                 constructing: false,
                 connecting: false,
@@ -95,8 +69,8 @@ export function customElement(tagName: string, userFunction: UserFunction) {
         }
 
         async adoptedCallback() {
-            await applyUserResult(userFunction, {
-                props: this.props,
+            await applyCustomElementDefinerResult(this, customElementDefiner, {
+                ...this.props,
                 update: this.update.bind(this),
                 constructing: false,
                 connecting: false,
@@ -108,13 +82,17 @@ export function customElement(tagName: string, userFunction: UserFunction) {
             this.dispatchEvent(new CustomEvent('adopted'));
         }
 
-        async update(props?: Props) {
-            if (props !== undefined) {
-                this.props = calculateProps(props);
+        async update(customElementDefinerResult: CustomElementDefinerResult) {
+            // TODO try to get rid of the type assertions, we might be able to create a better check that returns the correct type?
+            if (checkIfCustomElementDefinerResultIsProps(customElementDefinerResult)) {
+                this.props = {
+                    ...this.props,
+                    ...customElementDefinerResult
+                };
             }
 
-            await applyUserResult(userFunction, {
-                props: this.props,
+            await applyCustomElementDefinerResult(this, customElementDefiner, {
+                ...this.props,
                 update: this.update.bind(this),
                 constructing: false,
                 connecting: false,
@@ -130,45 +108,59 @@ export function customElement(tagName: string, userFunction: UserFunction) {
 
 //TODO perhaps to allow asynchronous property setting here we can do an async reduce
 //TODO look into asynchronous property setters though, I don't think we'll be able to allow that
-function calculateProps(props: Props) {
-    return Object.keys(props).reduce((result: Props, propKey: string) => {
-        const propValue = props[propKey];
-        return {
-            ...result,
-            [propKey]: typeof propValue === 'function' ? propValue() : propValue
-        };
-    }, {});
-}
+// function calculateProps(props: Props) {
+//     return Object.keys(props).reduce((result: Props, propKey: string) => {
+//         const propValue = props[propKey];
+//         return {
+//             ...result,
+//             [propKey]: propValue
+//         };
+//     }, {});
+// }
 
-async function applyUserResult(userFunction: UserFunction, userFunctionOptions: UserFunctionOptions) {
-    const userResult: UserFunctionResult = await userFunction(userFunctionOptions);
-    
-    if (userResult === undefined) {
-        throw new Error('Nothing returned from element function');
+async function applyCustomElementDefinerResult(element: FunctionalElement, customElementDefiner: CustomElementDefiner, customElementDefinerOptions: CustomElementDefinerOptions): Promise<void> {
+    const customElementDefinerResult: CustomElementDefinerResult = await customElementDefiner(customElementDefinerOptions);
+
+    // TODO try to get rid of the type assertions, we might be able to create a better check that returns the correct type?
+    if (checkIfCustomElementDefinerResultIsProps(customElementDefinerResult)) {
+        element.props = {
+            ...element.props,
+            ...customElementDefinerResult
+        };
+
+        await applyCustomElementDefinerResult(element, customElementDefiner, {
+            ...element.props,
+            update: element.update.bind(element),
+            constructing: false,
+            connecting: false,
+            disconnecting: false,
+            adopting: false,
+            element
+        });
     }
 
-    render(<TemplateResult> userResult, userFunctionOptions.element);
-
-    //TODO we might want to throw something here
+    if (checkIfCustomElementDefinerResultIsTemplateResult(customElementDefinerResult)) {
+        render(customElementDefinerResult as TemplateResult, customElementDefinerOptions.element);
+    }
 }
 
-function createPropertyAccessors(element: FunctionalElement, userFunction: UserFunction) {
+function createPropertyAccessors(element: FunctionalElement, customElementDefiner: CustomElementDefiner) {
     Object.keys(element.props).forEach((propsKey) => {
         Object.defineProperty(element, propsKey, {
            set (val) {
                 element.props = {
                     ...element.props,
-                    [propsKey]: typeof val === 'function' ? val() : val
+                    [propsKey]: val
                 };
 
-                applyUserResult(userFunction, {
-                    props: element.props,
-                    update: element.update.bind(this),
+                applyCustomElementDefinerResult(element, customElementDefiner, {
+                    ...element.props,
+                    update: element.update.bind(element), // TODO not sure if the context is correct here
                     constructing: false,
                     connecting: false,
                     disconnecting: false,
                     adopting: false,
-                    element: this
+                    element // TODO not sure if the context is correct here
                 });
            },
            get () {
@@ -176,4 +168,22 @@ function createPropertyAccessors(element: FunctionalElement, userFunction: UserF
            }
         });
     });
+}
+
+function checkIfCustomElementDefinerResultIsTemplateResult(customElementDefinerResult: CustomElementDefinerResult): boolean {
+    return (
+        customElementDefinerResult !== null &&
+        customElementDefinerResult !== undefined &&
+        customElementDefinerResult.constructor &&
+        customElementDefinerResult.constructor.name === 'TemplateResult'
+    );
+}
+
+function checkIfCustomElementDefinerResultIsProps(customElementDefinerResult: CustomElementDefinerResult): boolean {
+    return (
+        customElementDefinerResult !== null &&
+        customElementDefinerResult !== undefined &&
+        customElementDefinerResult.constructor &&
+        customElementDefinerResult.constructor.name === 'Object'
+    );
 }
