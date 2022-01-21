@@ -9,7 +9,7 @@ import {
 
 export { html } from 'lit-html';
 
-export function customElement(tagName: string, customElementDefiner: CustomElementDefiner) {
+function CustomElement(tagName: string, customElementDefiner: CustomElementDefiner) {
     window.customElements.define(tagName, class extends HTMLElement {
         props: Props = {};
 
@@ -105,6 +105,8 @@ export function customElement(tagName: string, customElementDefiner: CustomEleme
         }
     });
 }
+
+export const customElement = CustomElement;
 
 //TODO perhaps to allow asynchronous property setting here we can do an async reduce
 //TODO look into asynchronous property setters though, I don't think we'll be able to allow that

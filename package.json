@@ -1,6 +1,6 @@
 {
   "name": "functional-element",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "",
   "main": "functional-element.ts",
   "scripts": {
