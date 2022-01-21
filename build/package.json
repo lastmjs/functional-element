@@ -1,8 +1,8 @@
 {
   "name": "functional-element",
-  "version": "0.0.15",
+  "version": "0.0.17",
   "description": "",
-  "main": "functional-element.ts",
+  "module": "build/functional-element.js",
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build",

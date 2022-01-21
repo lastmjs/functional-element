@@ -1,5 +1,6 @@
 import {render} from "./_snowpack/pkg/lit-html.js";
 export {html} from "./_snowpack/pkg/lit-html.js";
+export {unsafeHTML} from "./_snowpack/pkg/lit-html/directives/unsafe-html.js";
 export function customElement(tagName, customElementDefiner) {
   window.customElements.define(tagName, class extends HTMLElement {
     constructor() {

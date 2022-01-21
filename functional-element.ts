@@ -8,6 +8,7 @@ import {
 } from './index.d'; 
 
 export { html } from 'lit-html';
+export { unsafeHTML } from 'lit-html/directives/unsafe-html';
 
 export function customElement(tagName: string, customElementDefiner: CustomElementDefiner) {
     window.customElements.define(tagName, class extends HTMLElement {

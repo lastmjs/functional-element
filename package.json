@@ -1,6 +1,6 @@
 {
   "name": "functional-element",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "",
   "module": "build/functional-element.js",
   "scripts": {

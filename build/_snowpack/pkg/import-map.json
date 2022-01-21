@@ -1,5 +1,6 @@
 {
   "imports": {
-    "lit-html": "./lit-html.js"
+    "lit-html": "./lit-html.js",
+    "lit-html/directives/unsafe-html": "./lit-html/directives/unsafe-html.js"
   }
 }
