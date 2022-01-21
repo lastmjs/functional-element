@@ -1,5 +1,5 @@
-import jsverify from 'jsverify-es-module';
-import { customElement, html } from '../functional-element';
+// import jsverify from 'jsverify-es-module';
+// import { customElement, html } from '../functional-element';
 
 class TestFunctionalElement extends HTMLElement {
     prepareTests(test: any) {

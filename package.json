@@ -2,9 +2,10 @@
   "name": "functional-element",
   "version": "0.0.15",
   "description": "",
-  "main": "functional-element.ts",
+  "module": "build/function-element.js",
   "scripts": {
-    "start": "zwitterion",
+    "start": "snowpack dev",
+    "build": "snowpack build",
     "test": "guesswork chromium firefox --entry test/index.js",
     "test-manual": "guesswork --entry test/index.js"
   },
@@ -22,7 +23,6 @@
     "lit-html": "1.1.0"
   },
   "devDependencies": {
-    "guesswork": "0.11.2",
-    "zwitterion": "0.28.1"
+    "snowpack": "3.8.8"
   }
 }

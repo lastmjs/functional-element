@@ -1,5 +1,5 @@
-import '../node_modules/guesswork/test-runner.ts';
-import './test-functional-element.ts';
+// import '../node_modules/guesswork/test-runner.ts';
+// import './test-functional-element.ts';
 
 window.document.body.innerHTML = `
     <test-runner>
