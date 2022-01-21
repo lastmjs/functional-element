@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        // "target": "es2015",
+        "lib": ["es2017", "dom"],
+        // "moduleResolution": "node"
+    }
+}

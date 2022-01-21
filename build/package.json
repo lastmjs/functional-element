@@ -1,0 +1,28 @@
+{
+  "name": "functional-element",
+  "version": "0.0.15",
+  "description": "",
+  "main": "functional-element.ts",
+  "scripts": {
+    "start": "snowpack dev",
+    "build": "snowpack build",
+    "test": "guesswork chromium firefox --entry test/index.js",
+    "test-manual": "guesswork --entry test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lastmjs/functional-element.git"
+  },
+  "author": "Jordan Last <jordan.michael.last@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lastmjs/functional-element/issues"
+  },
+  "homepage": "https://github.com/lastmjs/functional-element#readme",
+  "dependencies": {
+    "lit-html": "1.1.0"
+  },
+  "devDependencies": {
+    "snowpack": "3.8.8"
+  }
+}
